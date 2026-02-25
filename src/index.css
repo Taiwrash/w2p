@@ -884,3 +884,53 @@ footer {
 .dash-fade-in {
     animation: slideFadeUp 0.5s ease-out forwards;
 }
+
+/* Print Styles */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .sidebar, .dash-header, .navbar, footer, .weather-widget, .no-print {
+    display: none !important;
+  }
+
+  .dashboard-main {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+
+  .card.print-card {
+    background: white !important;
+    color: black !important;
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+    padding: 10px !important;
+    page-break-inside: avoid;
+  }
+
+  .print-card * {
+    color: black !important;
+  }
+  
+  .print-icon-color {
+    color: black !important;
+    stroke: black !important;
+  }
+  
+  /* Background gradients reset for printing */
+  .dash-grid [style*="background: rgba"] {
+    background: transparent !important;
+    border-left-color: #333 !important;
+    border: 1px solid #ccc !important;
+  }
+
+  /* Specific reset for phases */
+  .dash-grid span[style*="background:"] {
+    background: transparent !important;
+    color: black !important;
+    border: 1px solid #000 !important;
+  }
+}

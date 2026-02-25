@@ -1,22 +1,32 @@
 import React from 'react';
-import { Calendar } from 'lucide-react';
+import { Calendar, Printer } from 'lucide-react';
 
 const ActionPlan = ({ farmLocation, waterSource, selectedCrop, setSelectedCrop, cropSuitability, soilType }) => {
     return (
         <div className="dash-grid dash-fade-in">
-            <div className="col-span-12 card">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="col-span-12 card print-card">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className="print-header">
                     <div className="card-title" style={{ margin: 0 }}>
-                        <Calendar size={20} color="#00E396" />
+                        <Calendar size={20} color="#00E396" className="print-icon-color" />
                         AI-Optimized Planting Strategy
                     </div>
-                    <select
-                        value={selectedCrop}
-                        onChange={e => setSelectedCrop(e.target.value)}
-                        style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--primary-color)', background: 'rgba(0,227,150,0.1)', color: '#00E396', fontFamily: 'inherit', fontWeight: 'bold', outline: 'none' }}
-                    >
-                        {cropSuitability.map((c, i) => <option key={i} value={c.name} style={{ color: '#000' }}>Target: {c.name}</option>)}
-                    </select>
+                    <div style={{ display: 'flex', gap: '10px' }} className="no-print">
+                        <select
+                            value={selectedCrop}
+                            onChange={e => setSelectedCrop(e.target.value)}
+                            style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--primary-color)', background: 'rgba(0,227,150,0.1)', color: '#00E396', fontFamily: 'inherit', fontWeight: 'bold', outline: 'none' }}
+                        >
+                            {cropSuitability.map((c, i) => <option key={i} value={c.name} style={{ color: '#000' }}>Target: {c.name}</option>)}
+                        </select>
+                        <button
+                            onClick={() => window.print()}
+                            title="Print Calendar/Plan"
+                            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: 'var(--primary-color)', color: '#000', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}
+                        >
+                            <Printer size={18} />
+                            Print
+                        </button>
+                    </div>
                 </div>
                 <p style={{ color: 'var(--text-muted)', marginBottom: '30px', marginTop: '15px' }}>
                     Dynamically generated timetable optimized for <strong>{farmLocation.lat.toFixed(4)}, {farmLocation.lng.toFixed(4)}</strong> footprint.
