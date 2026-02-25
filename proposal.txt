@@ -1,0 +1,42 @@
+W2P (When & What to Plant)
+AI for Agriculture | BeOrchid Africa Developers Hackathon 2026
+Executive Summary
+W2P is an AI-powered agricultural intelligence platform built to remove uncertainty from planting
+decisions. It combines climate forecasting, machine learning, and localized environmental data to
+guide farmers on when to plant, what to plant, and the level of yield risk they face. The system
+transforms raw climate data into practical, actionable guidance for African smallholder farmers.
+Problem Statement
+Growing up on a farm, planting season always felt like a gamble. Before planting, the first concern
+was whether the seeds would germinate. We questioned soil moisture levels, rainfall stability,
+temperature, and humidity. Planting requires financial commitment in clearing land, plowing,
+purchasing seeds, and labor. If germination fails, those investments are lost. Even when crops
+germinate, farmers remain uncertain whether weather conditions will sustain growth through
+flowering and seed production. Across Africa, traditional planting calendars no longer align with
+shifting climate patterns. The challenge is not lack of effort but lack of accessible, localized climate
+intelligence.
+Proposed Solution
+W2P analyzes historical rainfall trends, seasonal forecasts, temperature patterns, and soil inputs to
+predict optimal planting windows. Using time-series forecasting models such as Prophet or LSTM,
+the system estimates rainfall onset stability and growing season reliability. Machine learning
+classifiers such as Random Forest or XGBoost evaluate crop suitability and generate germination
+probability scores and yield risk estimates. Farmers receive clear recommendations tailored to their
+location, helping them reduce financial risk and improve productivity.
+Technical Architecture
+Backend: FastAPI built in Python with PostgreSQL for structured climate and crop data storage.
+The system is containerized using Docker for portability and cloud deployment readiness.
+Machine Learning Layer: Time-series forecasting for rainfall prediction, supervised learning models
+for crop suitability classification, feature engineering based on rainfall averages, temperature
+variability, and seasonal indices.
+Frontend: React-based interface designed to be mobile-first and low-bandwidth compatible. The
+interface provides planting recommendations, risk visualization dashboards, and yield projection
+summaries.
+Scalability and Impact
+W2P is designed as a scalable cloud-ready platform that can serve individual farmers,
+cooperatives, and government advisory bodies. The architecture supports expansion to multiple
+regions and crop types. Future integration can include SMS advisory systems, satellite vegetation
+indices, and insurance risk modeling.
+Recommended Supporting Diagrams
+For technical validation and judging clarity, it is recommended to include: 1. System Architecture
+Diagram showing data ingestion, ML pipeline, API layer, and frontend interaction. 2. Machine
+Learning Workflow Diagram illustrating feature engineering, training, validation, and inference
+stages. 3. User Flow Diagram showing farmer input to AI recommendation output.
