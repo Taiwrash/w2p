@@ -877,12 +877,23 @@ footer {
 
 /* Dashboard Animation */
 @keyframes slideFadeUp {
-    0% { opacity: 0; transform: translateY(20px); }
-    100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .dash-fade-in {
-    animation: slideFadeUp 0.5s ease-out forwards;
+  animation: slideFadeUp 0.5s ease-out forwards;
+}
+
+.print-only {
+  display: none;
 }
 
 /* Print Styles */
@@ -891,9 +902,18 @@ footer {
     background: white !important;
     color: black !important;
   }
-  
-  .sidebar, .dash-header, .navbar, footer, .weather-widget, .no-print {
+
+  .sidebar,
+  .dash-header,
+  .navbar,
+  footer,
+  .weather-widget,
+  .no-print {
     display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
   }
 
   .dashboard-main {
@@ -914,12 +934,12 @@ footer {
   .print-card * {
     color: black !important;
   }
-  
+
   .print-icon-color {
     color: black !important;
     stroke: black !important;
   }
-  
+
   /* Background gradients reset for printing */
   .dash-grid [style*="background: rgba"] {
     background: transparent !important;
