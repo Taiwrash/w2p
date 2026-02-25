@@ -79,7 +79,7 @@ const AgentPortfolio = () => {
                                 </td>
                                 <td style={{ padding: '16px 10px', display: 'flex', gap: '10px' }}>
                                     <button style={{ background: 'transparent', border: '1px solid var(--glass-border)', color: '#fff', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}><MapPin size={14} /> Profile</button>
-                                    <button style={{ background: 'rgba(0,143,251,0.1)', border: '1px solid #008FFB', color: '#008FFB', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}><Printer size={14} /> Print Calendar</button>
+                                    <button onClick={() => window.print()} style={{ background: 'rgba(0,143,251,0.1)', border: '1px solid #008FFB', color: '#008FFB', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}><Printer size={14} /> Print Calendar</button>
                                 </td>
                             </tr>
                         ))}
