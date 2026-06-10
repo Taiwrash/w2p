@@ -34,7 +34,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
 from database import init_db
-from routers import clients, farm, market, mlops, sms, regional
+from routers import clients, farm, market, mlops, sms, regional, auth
 
 
 # ---------------------------------------------------------------------------
@@ -82,6 +82,7 @@ app.include_router(sms.router)
 app.include_router(mlops.router)
 app.include_router(market.router)
 app.include_router(regional.router)
+app.include_router(auth.router)
 
 # ---------------------------------------------------------------------------
 # Serve built frontend (Docker / production mode)

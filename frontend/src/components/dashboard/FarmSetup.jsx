@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Crosshair, Cpu, Activity } from 'lucide-react';
+import { Crosshair, Cpu, Activity, MapPin } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, Popup, Polygon, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -66,6 +66,24 @@ const FarmSetup = ({
         return getFarmPolygon(farmLocation.lat, farmLocation.lng, farmArea);
     }, [farmLocation, farmArea]);
 
+    const handleLocateMe = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    setFarmLocation({
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    });
+                },
+                (err) => {
+                    alert("Could not fetch location. Please ensure location services are enabled in your browser.");
+                }
+            );
+        } else {
+            alert("Geolocation is not supported by your browser.");
+        }
+    };
+
     return (
         <div className="dash-grid dash-fade-in">
             <div className="col-span-12 card">
@@ -117,14 +135,22 @@ const FarmSetup = ({
                     </div>
                 </div>
 
-                <div style={{ padding: '12px', borderRadius: '8px', border: '1px solid var(--glass-border)', background: 'rgba(0,0,0,0.2)', color: 'var(--text-main)', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span>Selected Center Coordinates: <strong style={{ color: '#00E396' }}>{farmLocation.lat.toFixed(5)}, {farmLocation.lng.toFixed(5)}</strong></span>
+                <div style={{ padding: '12px', borderRadius: '8px', border: '1px solid var(--glass-border)', background: 'rgba(0,0,0,0.2)', color: 'var(--text-main)', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                        <span>Selected Center: <strong style={{ color: '#00E396' }}>{farmLocation.lat.toFixed(5)}, {farmLocation.lng.toFixed(5)}</strong></span>
+                        <button 
+                            onClick={handleLocateMe}
+                            style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'rgba(0, 227, 150, 0.1)', color: '#00E396', border: '1px solid rgba(0, 227, 150, 0.3)', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem' }}
+                        >
+                            <MapPin size={14} /> Use My GPS
+                        </button>
+                    </div>
                     <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Calculated Footprint: {(farmArea * 4046.86).toFixed(0)} sq meters</span>
                 </div>
 
                 <div style={{ height: '450px', width: '100%', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--glass-border)', position: 'relative', zIndex: 1 }}>
                     {/* Make sure we pass the key as location so it re-centers immediately if desired, but here we let the user pan freely. Using zoom=16 to see the boundary clearly */}
-                    <MapContainer center={[farmLocation.lat, farmLocation.lng]} zoom={15} style={{ height: '100%', width: '100%' }}>
+                    <MapContainer key={`${farmLocation.lat}-${farmLocation.lng}`} center={[farmLocation.lat, farmLocation.lng]} zoom={15} style={{ height: '100%', width: '100%' }}>
                         <TileLayer
                             attribution='&copy; OpenStreetMap contributors'
                             url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"

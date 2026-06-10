@@ -4,13 +4,54 @@ import { ArrowRight, Leaf, Mail, Lock } from 'lucide-react';
 
 const Auth = () => {
     const [isLogin, setIsLogin] = useState(true);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [name, setName] = useState('');
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
-    const handleAuth = (e) => {
+    const handleAuth = async (e) => {
         e.preventDefault();
-        // Standardize entry: Check if they previously upgraded on this device (for hackathon demo)
-        const savedRole = localStorage.getItem('w2p_role') || 'farmer';
-        navigate('/dashboard', { state: { role: savedRole } });
+        setError('');
+        setIsLoading(true);
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+        try {
+            const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+            const payload = isLogin ? { email, password } : { email, password, name };
+
+            const response = await fetch(`${import.meta.env.VITE_API_URL ?? ''}${endpoint}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+                signal: controller.signal,
+            });
+
+            clearTimeout(timeoutId);
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.detail || 'Authentication failed');
+            }
+
+            // Save session state
+            localStorage.setItem('w2p_role', data.user.role);
+            localStorage.setItem('w2p_user', JSON.stringify(data.user));
+
+            navigate('/dashboard', { state: { role: data.user.role } });
+        } catch (err) {
+            clearTimeout(timeoutId);
+            if (err.name === 'AbortError') {
+                setError('Server did not respond. Please ensure the backend is running and try again.');
+            } else {
+                setError(err.message);
+            }
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -39,8 +80,14 @@ const Auth = () => {
                             <Leaf size={30} color="#00E396" />
                         </div>
                         <h2 style={{ fontSize: '2rem', marginBottom: '10px' }}>{isLogin ? 'Welcome Back' : 'Create an Account'}</h2>
-                        <p style={{ color: 'var(--text-muted)' }}>{isLogin ? 'Enter your credentials to access your workspace.' : 'Join the fastest growing African agritech network.'}</p>
+                        <p style={{ color: 'var(--text-muted)' }}>{isLogin ? 'Enter your credentials to access your workspace. Use admin@w2p.com / password123 for demo.' : 'Join the fastest growing African agritech network.'}</p>
                     </div>
+
+                    {error && (
+                        <div style={{ background: 'rgba(255, 86, 48, 0.1)', color: '#FF5630', padding: '12px 16px', borderRadius: '8px', marginBottom: '20px', fontSize: '0.9rem', border: '1px solid rgba(255, 86, 48, 0.2)' }}>
+                            {error}
+                        </div>
+                    )}
 
                     <form onSubmit={handleAuth} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         {!isLogin && (
@@ -50,6 +97,8 @@ const Auth = () => {
                                     type="text"
                                     placeholder="Enter your name"
                                     required={!isLogin}
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
                                     style={{ width: '100%', padding: '14px 20px', borderRadius: '8px', border: '1px solid var(--glass-border)', background: 'var(--bg-dark)', color: 'white', fontSize: '1rem', outline: 'none' }}
                                     onFocus={(e) => e.target.style.borderColor = '#00E396'}
                                     onBlur={(e) => e.target.style.borderColor = 'var(--glass-border)'}
@@ -62,9 +111,11 @@ const Auth = () => {
                             <div style={{ position: 'relative' }}>
                                 <Mail size={18} color="#A0AEC0" style={{ position: 'absolute', top: '50%', left: '16px', transform: 'translateY(-50%)' }} />
                                 <input
-                                    type="text"
+                                    type="email"
                                     placeholder="your@email.com"
                                     required
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     style={{ width: '100%', padding: '14px 20px 14px 45px', borderRadius: '8px', border: '1px solid var(--glass-border)', background: 'var(--bg-dark)', color: 'white', fontSize: '1rem', outline: 'none' }}
                                     onFocus={(e) => e.target.style.borderColor = '#00E396'}
                                     onBlur={(e) => e.target.style.borderColor = 'var(--glass-border)'}
@@ -83,6 +134,8 @@ const Auth = () => {
                                     type="password"
                                     placeholder="••••••••"
                                     required
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                     style={{ width: '100%', padding: '14px 20px 14px 45px', borderRadius: '8px', border: '1px solid var(--glass-border)', background: 'var(--bg-dark)', color: 'white', fontSize: '1rem', outline: 'none' }}
                                     onFocus={(e) => e.target.style.borderColor = '#00E396'}
                                     onBlur={(e) => e.target.style.borderColor = 'var(--glass-border)'}
@@ -93,9 +146,10 @@ const Auth = () => {
                         <button
                             type="submit"
                             className="btn btn-primary"
-                            style={{ width: '100%', padding: '16px', marginTop: '10px' }}
+                            disabled={isLoading}
+                            style={{ width: '100%', padding: '16px', marginTop: '10px', opacity: isLoading ? 0.7 : 1 }}
                         >
-                            {isLogin ? 'Sign In' : 'Create Free Account'} <ArrowRight size={18} />
+                            {isLoading ? 'Processing...' : (isLogin ? 'Sign In' : 'Create Free Account')} {!isLoading && <ArrowRight size={18} />}
                         </button>
                     </form>
 

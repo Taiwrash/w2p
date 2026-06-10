@@ -149,3 +149,20 @@ class RegionalSummaryResponse(BaseModel):
     total_agents:   int
     critical_region: str
     zones:          list[RegionalZone]
+
+# ---------------------------------------------------------------------------
+# Auth
+# ---------------------------------------------------------------------------
+
+class LoginRequest(BaseModel):
+    email:    str = Field(..., min_length=1)
+    password: str = Field(..., min_length=1)
+
+class RegisterRequest(BaseModel):
+    email:    str = Field(..., min_length=1)
+    password: str = Field(..., min_length=1)
+    name:     str = Field(..., min_length=1)
+
+class AuthResponse(BaseModel):
+    status: str = "success"
+    user:   dict[str, Any]

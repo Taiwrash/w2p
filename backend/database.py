@@ -27,6 +27,15 @@ def get_db() -> sqlite3.Connection:
 # Schema creation
 # ---------------------------------------------------------------------------
 
+_CREATE_USERS = """
+CREATE TABLE IF NOT EXISTS users (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    email      TEXT    NOT NULL UNIQUE,
+    password   TEXT    NOT NULL,
+    name       TEXT    NOT NULL,
+    role       TEXT    NOT NULL DEFAULT 'farmer'
+)"""
+
 _CREATE_FARMS = """
 CREATE TABLE IF NOT EXISTS farms (
     id           INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -169,11 +178,18 @@ def init_db() -> None:
     cur  = conn.cursor()
 
     # Create tables
-    for ddl in (_CREATE_FARMS, _CREATE_CLIENTS, _CREATE_SMS_LOGS, _CREATE_ML_RUNS):
+    for ddl in (_CREATE_USERS, _CREATE_FARMS, _CREATE_CLIENTS, _CREATE_SMS_LOGS, _CREATE_ML_RUNS):
         cur.execute(ddl)
     conn.commit()
 
     now = datetime.now().isoformat()
+
+    # Seed users
+    if cur.execute("SELECT COUNT(*) FROM users").fetchone()[0] == 0:
+        cur.execute(
+            "INSERT INTO users (email, password, name, role) VALUES (?, ?, ?, ?)",
+            ("admin@w2p.com", "password123", "Admin User", "enterprise")
+        )
 
     # Seed clients
     if cur.execute("SELECT COUNT(*) FROM clients").fetchone()[0] == 0:
