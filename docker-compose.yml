@@ -1,0 +1,54 @@
+# =============================================================================
+# docker-compose.yml  –  W2P full-stack (frontend + backend on one port)
+# =============================================================================
+#
+# Quickstart
+# ----------
+#   cp .env.example .env          # add your GEMINI_API_KEY
+#   docker compose up --build     # builds & starts everything
+#   open http://localhost:8000    # ← app is live
+#
+# The multi-stage build (Dockerfile) compiles the Vite/React frontend and
+# embeds it inside the Python container.  A single port (8000) serves both
+# the API (/api/*) and the static SPA.
+#
+# Services
+# --------
+#   w2p   — the combined FastAPI + static-file server
+#
+# Volumes
+# -------
+#   w2p_db — persists the SQLite database across container restarts
+# =============================================================================
+
+services:
+  w2p:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: w2p-app:latest
+    container_name: w2p
+    restart: unless-stopped
+
+    ports:
+      - "8000:8000"
+
+    environment:
+      # Tell FastAPI to also serve the compiled frontend
+      SERVE_STATIC: "true"
+      # Paste your key here or use an .env file
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+
+    volumes:
+      # Persist the SQLite DB so data survives container rebuilds
+      - w2p_db:/app/backend
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/farm-status"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  w2p_db:

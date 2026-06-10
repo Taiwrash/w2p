@@ -1,0 +1,39 @@
+# Node
+frontend/node_modules/
+npm-debug.log*
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Vite build outputs (rebuilt inside Docker)
+frontend/dist/
+frontend/.vite/
+
+# SQLite DB (managed by Docker volume)
+backend/w2p.db
+
+# VCS / editor
+.git/
+.github/
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Environment / secrets
+.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dev scripts (not needed in image)
+dev.sh
+*.sh
